@@ -11,35 +11,69 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from utils import validate_prompt_structure
 
+
 def load_prompts(file_path: str):
     """Carrega prompts do arquivo YAML."""
     with open(file_path, 'r', encoding='utf-8') as f:
         return yaml.safe_load(f)
 
+
 class TestPrompts:
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        """Carrega dados do prompt otimizado v2."""
+        yaml_path = Path(__file__).parent.parent / "prompts" / "bug_to_user_story_v2.yml"
+        data = load_prompts(str(yaml_path))
+        self.prompt_data = data.get("bug_to_user_story_v2", data)
+
     def test_prompt_has_system_prompt(self):
         """Verifica se o campo 'system_prompt' existe e não está vazio."""
-        pass
+        assert "system_prompt" in self.prompt_data, "O campo 'system_prompt' não foi encontrado no arquivo YAML"
+        system_prompt = self.prompt_data.get("system_prompt", "")
+        assert isinstance(system_prompt, str), "O campo 'system_prompt' deve ser uma string"
+        assert len(system_prompt.strip()) > 0, "O 'system_prompt' está vazio"
 
     def test_prompt_has_role_definition(self):
-        """Verifica se o prompt define uma persona (ex: "Você é um Product Manager")."""
-        pass
+        """Verifica se o prompt define uma persona (ex: 'Você é um Product Manager')."""
+        system_prompt = self.prompt_data.get("system_prompt", "").lower()
+        role_indicators = ["product manager", "você é um", "voce e um", "persona", "especialista em produto"]
+        assert any(indicator in system_prompt for indicator in role_indicators), (
+            "O prompt não define uma persona ou papel explícito (ex: 'Você é um Product Manager')"
+        )
 
     def test_prompt_mentions_format(self):
-        """Verifica se o prompt exige formato Markdown ou User Story padrão."""
-        pass
+        """Verifica se o prompt exige formato Markdown e BDD ('Dado... Quando... Então...')."""
+        system_prompt = self.prompt_data.get("system_prompt", "").lower()
+        assert "markdown" in system_prompt, "O prompt deve exigir explicitamente formatação em Markdown"
+        assert "dado" in system_prompt, "O prompt deve exigir formato BDD contendo a cláusula 'Dado'"
+        assert "quando" in system_prompt, "O prompt deve exigir formato BDD contendo a cláusula 'Quando'"
+        assert ("então" in system_prompt or "entao" in system_prompt), (
+            "O prompt deve exigir formato BDD contendo a cláusula 'Então'"
+        )
 
     def test_prompt_has_few_shot_examples(self):
         """Verifica se o prompt contém exemplos de entrada/saída (técnica Few-shot)."""
-        pass
+        system_prompt = self.prompt_data.get("system_prompt", "")
+        system_prompt_lower = system_prompt.lower()
+        has_examples_keyword = "exemplo" in system_prompt_lower or "example" in system_prompt_lower or "few-shot" in system_prompt_lower
+        assert has_examples_keyword, "O prompt deve conter seção de exemplos Few-Shot demonstrando entrada e saída"
+        examples_count = system_prompt_lower.count("exemplo") + system_prompt_lower.count("example")
+        assert examples_count >= 2, f"O prompt deve conter múltiplos exemplos (mínimo 2), encontrados: {examples_count}"
 
     def test_prompt_no_todos(self):
-        """Garante que você não esqueceu nenhum `[TODO]` no texto."""
-        pass
+        """Garante que você não esqueceu nenhum `[TODO]` ou `TODO` no texto."""
+        system_prompt = self.prompt_data.get("system_prompt", "")
+        assert "[todo]" not in system_prompt.lower(), "O system_prompt contém a marcação [TODO]"
+        assert "todo" not in system_prompt.lower(), "O system_prompt contém a palavra TODO residual"
 
     def test_minimum_techniques(self):
         """Verifica (através dos metadados do yaml) se pelo menos 2 técnicas foram listadas."""
-        pass
+        techniques = self.prompt_data.get("techniques_applied", [])
+        assert isinstance(techniques, list), "O campo 'techniques_applied' deve ser uma lista nos metadados do YAML"
+        assert len(techniques) >= 2, (
+            f"Metadados devem listar no mínimo 2 técnicas reconhecidas, encontradas: {len(techniques)}"
+        )
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "--tb=short"])
