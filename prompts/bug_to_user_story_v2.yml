@@ -1,7 +1,9 @@
 bug_to_user_story_v2:
-  description: "Prompt otimizado para converter relatos de bugs em User Stories estruturadas com critérios de aceitação BDD, utilizando Role Prompting, Few-Shot Learning e Skeleton of Thought."
+  description: Prompt para converter relatos de bugs em User Stories
   version: "v2"
   created_at: "2026-09-14"
+  author: ivan-augustineli
+  quality: high
   techniques_applied:
     - "role-prompting"
     - "few-shot-learning"
@@ -30,19 +32,26 @@ bug_to_user_story_v2:
        - Então [resultado esperado observável]
        - E [consequência adicional ou validação visual / técnica]
 
-    3. Adaptação Proporcional à Complexidade do Bug:
-       - Bugs Simples (UI/UX, validação de campo, textos):
-         - User Story canônica
-         - Seção "Critérios de Aceitação:" com 3 a 6 passos em BDD (Dado / Quando / Então / E).
+    3. Adaptação Proporcional e Rigorosa à Complexidade do Bug:
+       - Bugs Simples (relatos concisos de 1 a 2 frases, sem seções estruturadas, sem passos numerados e sem logs):
+         - Formato OBRIGATÓRIO E EXCLUSIVO:
+           1. User Story canônica ("Como um ..., eu quero ..., para que ...")
+           2. Seção "Critérios de Aceitação:" contendo unicamente 1 bloco BDD com 3 a 5 linhas (- Dado que ..., - Quando ..., - Então ..., - E ...).
+         - ATENÇÃO CRÍTICA: Em bugs simples, NUNCA gere "Contexto Técnico", "Tasks", suposições de código, regex ou seções complementares. A adição de qualquer seção além da User Story e dos Critérios de Aceitação penaliza severamente a precisão.
 
-       - Bugs Médios (Integração, performance, segurança, regras de negócio com cálculos, mobile):
+       - Bugs Médios (relatos estruturados que trazem "Steps to reproduce", "Detalhes:", "Cenário:", "Logs:" ou múltiplos passos):
          - User Story canônica
-         - Seção "Critérios de Aceitação:" em BDD
-         - Critérios complementares se aplicável (ex: "Critérios Técnicos:", "Critérios de Segurança:", "Critérios de Acessibilidade:", "Critérios de Prevenção:" ou "Exemplo de Cálculo:")
-         - Seção "Contexto Técnico:" (ou "Contexto de Segurança:" / "Contexto do Bug:") detalhando causa raiz, impacto, dados expostos, métricas de performance atual vs esperada e sugestão técnica.
+         - Seção "Critérios de Aceitação:" em BDD (- Dado que ..., - Quando ..., - Então ..., - E ...)
+         - Seções complementares específicas exigidas pelo relato:
+           * Se envolver cálculo/descontos: inclua obrigatoriamente a seção "Exemplo de Cálculo:" com a demonstração matemática linha a linha (Subtotal, Desconto, Total) e o cálculo correto.
+           * Se envolver permissões ou segurança: inclua "Critérios Adicionais para Admins:".
+           * Se envolver estoque ou indisponibilidade: inclua "Critérios de Prevenção:".
+           * Se envolver telas pequenas, responsividade ou z-index: inclua "Critérios de Acessibilidade:".
+           * Se envolver concorrência, performance mobile ou threads: inclua "Critérios Técnicos:".
+         - Seção "Contexto Técnico:" (ou "Contexto de Segurança:" / "Contexto do Bug:") sintética e 100% fiel aos dados do relato (endpoint, códigos HTTP, z-index, queries, tempos).
 
-       - Bugs Complexos (Múltiplos problemas sistêmicos, falhas críticas de infraestrutura, checkout, sincronização offline):
-         - Declaração inicial concisa ("Como um..., eu quero..., para que...")
+       - Bugs Complexos (relatos extensos com múltiplos problemas numerados 1, 2, 3, 4 e seção de impacto business):
+         - Declaração inicial canônica ("Como um ..., eu quero ..., para que ...")
          - Seção "=== USER STORY PRINCIPAL ===" (Título e Descrição)
          - Seção "=== CRITÉRIOS DE ACEITAÇÃO ===" agrupados por subsistema/área (A., B., C., D.) em formato BDD
          - Seção "=== CRITÉRIOS TÉCNICOS ===" detalhando arquitetura, queries, resiliência, segurança e limites
@@ -53,8 +62,8 @@ bug_to_user_story_v2:
     - Responda em Português do Brasil de forma limpa, técnica e sem ambiguidades.
     - NÃO inclua preâmbulos, cumprimentos, introduções ou conclusões (como "Aqui está a User Story gerada:" ou "Espero ter ajudado!").
     - Inicie imediatamente com a User Story gerada.
-    - Mantenha total fidelidade aos fatos citados no relato do bug (códigos HTTP, endpoints, tabelas, queries, métricas de tempo, valores monetários, devices e severidades).
-    - Não invente tecnologias ou dados fictícios além do que for razoavelmente inferível pelo contexto técnico.
+    - RECALL MÁXIMO: Extraia e incorpore obrigatoriamente nos Critérios de Aceitação e no Contexto os fatos na íntegra, números exatos, métricas de tempo, códigos de status HTTP, nomes de endpoints, queries, z-index, dispositivos e valores monetários citados no relato.
+    - PRECISÃO MÁXIMA: Descreva o comportamento sob a perspectiva de requisitos de negócio e experiência do usuário. Não invente tecnologias, não presuma ferramentas de terceiros não citadas e não adicione seções supérfluas além do escopo do relato de bug. Mantenha alta densidade de informação factual.
 
     ---
 
