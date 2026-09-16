@@ -1,5 +1,8 @@
 # Pull, Otimização e Avaliação de Prompts com LangChain e LangSmith
-**MBA em Engenharia de Software com IA — FullCycle**
+## MBA em Engenharia de Software com IA — FullCycle
+
+**Repositório de entrega no GitHub:**
+  - [ivanaugustineli/mba-ia-pull-evaluation-prompt](https://github.com/ivanaugustineli/mba-ia-pull-evaluation-prompt)
 
 ---
 
@@ -8,34 +11,53 @@
 Este projeto implementa um pipeline completo e automatizado para o ciclo de vida de Engenharia de Prompts aplicado à conversão de relatos de bugs em User Stories ágeis de alta qualidade. 
 
 O fluxo contempla:
-1. **Pull automatizado** do prompt inicial de baixa qualidade (`v1`) hospedado no LangSmith Prompt Hub.
-2. **Engenharia e otimização de prompts (`v2`)** aplicando técnicas consagradas: *Role Prompting*, *Few-Shot Learning* e *Skeleton of Thought* / *Chain of Thought*.
-3. **Bateria de testes unitários automatizados** com `pytest` para validação estrutural de schemas, personas, formato BDD e ausência de resíduos (`TODO`).
-4. **Push público** do prompt otimizado para o LangSmith Prompt Hub com versionamento semântico e metadados estruturados.
-5. **Avaliação quantitativa com LLM-as-a-Judge** utilizando o LangSmith contra um dataset balanceado de 15 casos reais de bugs, validando aprovação com notas $\ge 0.80$ (80%) em **todas as 5 métricas obrigatórias**.
+1. **Pull automatizado** do prompt inicial de baixa qualidade (`v1`) hospedado no LangSmith Prompt Hub. 
+    - Link: [leonanluppi/bug_to_user_story_v1](https://smith.langchain.com/hub/leonanluppi/bug_to_user_story_v1)
+2. **Engenharia e otimização de prompts (`v2`)** aplicando técnicas consagradas:
+    - *Role Prompting*
+    - *Few-Shot Learning*
+    - *Skeleton of Thought*
+    - *Chain of Thought*
+3. **Bateria de testes unitários automatizados** com `pytest` para validação estrutural de:
+    - schemas
+    - personas
+    - formato BDD
+    - ausência de resíduos (`TODO`)
+4. **Push público** do prompt otimizado para o LangSmith Prompt Hub com versionamento semântico e metadados estruturados. 
+    - Link: [ivan-augustineli/bug_to_user_story_v2](https://smith.langchain.com/hub/ivan-augustineli/bug_to_user_story_v2)
+5. **Avaliação quantitativa com LLM-as-a-Judge** utilizando o LangSmith:
+    - contra um dataset balanceado de 15 casos reais de bugs
+    - validando aprovação com notas $\ge 0.80$ (80%) em **todas as 5 métricas obrigatórias**.
 
 ---
 
 ## 🎯 Resultados Finais da Avaliação
 
-### Tabela Comparativa: Prompt Inicial (v1) vs Prompt Otimizado (v2)
+### Tabela Comparativa: Prompt Inicial (v1) vs Prompt Commit 03 (v2) vs Prompt Otimizado (v2)
 
-| Métrica | Benchmark V1 (Baixa Qualidade) | Versão V2 (Otimizada) | Meta Mínima | Status |
-| :--- | :---: | :---: | :---: | :---: |
-| **Helpfulness** | 0.45 | **0.88** | 0.80 | ✅ APROVADO |
-| **Correctness** | 0.52 | **0.84** | 0.80 | ✅ APROVADO |
-| **F1-Score** | 0.48 | **0.81** | 0.80 | ✅ APROVADO |
-| **Clarity** | 0.50 | **0.90** | 0.80 | ✅ APROVADO |
-| **Precision** | 0.46 | **0.86** | 0.80 | ✅ APROVADO |
-| **MÉDIA GERAL** | 0.4820 | **0.8568** | 0.80 | ✅ **APROVADO** |
+| Métrica | Versão V1 (Baixa Qualidade) | Versão V2 (Commit 3) | Versão V2 (Otimizada) | Meta Mínima | Status |
+| :--- | :---: | :---: | :---: | :---: | :---: |
+| **Helpfulness** | 0.45 | 0.82 | **0.89** | 0.80 | ✅ APROVADO |
+| **Correctness** | 0.52 | 0.74 | **0.85** | 0.80 | ✅ APROVADO |
+| **F1-Score** | 0.48 | 0.69 | **0.82** | 0.80 | ✅ APROVADO |
+| **Clarity** | 0.50 | 0.85 | **0.90** | 0.80 | ✅ APROVADO |
+| **Precision** | 0.46 | 0.79 | **0.87** | 0.80 | ✅ APROVADO |
+| **MÉDIA GERAL** | 0.4820 | 0.7775 | **0.8667** | 0.80 | ✅ **APROVADO** |
 
 > **Critério Estrito:** Todas as 5 métricas atingiram pontuações superiores a **0.80 individualmente**, superando o limiar de aprovação exigido no desafio.
 
+### Evidência da Avaliação Final (Commit 06)
+
+![Avaliação final do prompt V2](tests/aprovado_prompt_commit_06.png)
+
 ### 🔗 Links Oficiais e Evidências no LangSmith
 
-- **Prompt Hub V2 (Público):** [ivan-augustineli/bug_to_user_story_v2](https://smith.langchain.com/hub/ivan-augustineli/bug_to_user_story_v2)
-- **Dashboard de Execuções e Tracing:** [LangSmith Project: mba_ia_fc](https://smith.langchain.com/projects/mba_ia_fc)
+- **Prompt Hub V2 (Público):** 
+    - [ivan-augustineli/bug_to_user_story_v2](https://smith.langchain.com/hub/ivan-augustineli/bug_to_user_story_v2)
+- **Dashboard de Execuções e Tracing:** 
+    - [LangSmith Tracing Project: mba_ia_fc](https://smith.langchain.com/o/309a3ac0-c1f4-4994-9351-87d42ab381bd/projects/p/27a03668-a3d8-4b8b-81b7-1637927aebcf)
 - **Dataset Avaliado:** `mba_ia_fc-eval` (15 exemplos: 5 simples, 7 médios, 3 complexos)
+    - [LangSmith Dataset: mba_ia_fc-eval](https://smith.langchain.com/o/309a3ac0-c1f4-4994-9351-87d42ab381bd/datasets/bc953b75-37ba-489b-a49f-b88f6c65c417?tab=1)
 
 ---
 
@@ -124,7 +146,7 @@ O arquivo `tests/test_prompts.py` valida 6 requisitos de integridade do prompt `
 
 ### Execução dos Testes:
 ```bash
-pytest tests/test_prompts.py -v
+pytest tests/test_prompts.py
 ```
 
 **Resultado Obtido:**
@@ -201,7 +223,7 @@ python src/pull_prompts.py
 
 #### Passo 2: Executar os Testes Unitários de Validação do Prompt (v2)
 ```bash
-pytest tests/test_prompts.py -v
+pytest tests/test_prompts.py
 ```
 > Valida os 6 testes de conformidade estrutural e de técnicas em `prompts/bug_to_user_story_v2.yml`.
 
@@ -214,6 +236,10 @@ python src/push_prompts.py
 #### Passo 4: Executar a Avaliação Automática
 ```bash
 python -X utf8 src/evaluate.py
+```
+ou
+```bash
+python src/evaluate.py
 ```
 > Avalia os 15 casos de teste contra o prompt v2 publicado no Hub e calcula as 5 métricas.
 
